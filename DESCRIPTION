@@ -1,6 +1,6 @@
 Package: workflowsets
 Title: Create a Collection of 'tidymodels' Workflows
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     c(person(given = "Max",
              family = "Kuhn",
@@ -20,7 +20,7 @@ LazyData: true
 RoxygenNote: 7.1.1.9001
 Imports: rlang, tune (>= 0.1.3), withr, dplyr (>= 1.0.0), purrr, tibble
         (>= 3.1.0), vctrs, tidyr, workflows (>= 0.2.2), cli, ggplot2,
-        stats, prettyunits, rsample (>= 0.0.9)
+        stats, prettyunits, rsample (>= 0.0.9), generics
 Language: en-US
 Suggests: spelling, recipes (>= 0.1.15), modeldata, parsnip, testthat
         (>= 3.0.0), covr, yardstick, dials, kknn, knitr, rmarkdown
@@ -30,9 +30,9 @@ URL: https://github.com/tidymodels/workflowsets,
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2021-03-17 14:30:07 UTC; max
+Packaged: 2021-04-16 16:02:22 UTC; max
 Author: Max Kuhn [aut, cre] (<https://orcid.org/0000-0003-2402-136X>),
   RStudio [cph]
 Maintainer: Max Kuhn <max@rstudio.com>
 Repository: CRAN
-Date/Publication: 2021-03-18 15:00:02 UTC
+Date/Publication: 2021-04-16 16:50:02 UTC

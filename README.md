@@ -127,17 +127,17 @@ chi_models <-
    )
 chi_models
 #> # A workflow set/tibble: 9 x 4
-#>   wflow_id      info             option    result    
-#>   <chr>         <list>           <list>    <list>    
-#> 1 simple_glmnet <tibble [1 × 4]> <opts[0]> <list [0]>
-#> 2 simple_cart   <tibble [1 × 4]> <opts[0]> <list [0]>
-#> 3 simple_knn    <tibble [1 × 4]> <opts[0]> <list [0]>
-#> 4 filter_glmnet <tibble [1 × 4]> <opts[0]> <list [0]>
-#> 5 filter_cart   <tibble [1 × 4]> <opts[0]> <list [0]>
-#> 6 filter_knn    <tibble [1 × 4]> <opts[0]> <list [0]>
-#> 7 pca_glmnet    <tibble [1 × 4]> <opts[0]> <list [0]>
-#> 8 pca_cart      <tibble [1 × 4]> <opts[0]> <list [0]>
-#> 9 pca_knn       <tibble [1 × 4]> <opts[0]> <list [0]>
+#>   wflow_id      info                 option    result    
+#>   <chr>         <list>               <list>    <list>    
+#> 1 simple_glmnet <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
+#> 2 simple_cart   <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
+#> 3 simple_knn    <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
+#> 4 filter_glmnet <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
+#> 5 filter_cart   <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
+#> 6 filter_knn    <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
+#> 7 pca_glmnet    <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
+#> 8 pca_cart      <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
+#> 9 pca_knn       <tibble[,4] [1 × 4]> <opts[0]> <list [0]>
 ```
 
 It doesn’t make sense to use PCA or a filter with a `glmnet` model. We
@@ -192,30 +192,30 @@ chi_models <-
    workflow_map("tune_grid", resamples = splits, grid = 10, 
                 metrics = metric_set(mae), verbose = TRUE)
 #> i 1 of 7 tuning:     simple_glmnet
-#> ✓ 1 of 7 tuning:     simple_glmnet (23.9s)
+#> ✓ 1 of 7 tuning:     simple_glmnet (25.4s)
 #> i 2 of 7 tuning:     simple_cart
-#> ✓ 2 of 7 tuning:     simple_cart (25s)
+#> ✓ 2 of 7 tuning:     simple_cart (27s)
 #> i 3 of 7 tuning:     simple_knn
-#> ✓ 3 of 7 tuning:     simple_knn (25.4s)
+#> ✓ 3 of 7 tuning:     simple_knn (26.7s)
 #> i 4 of 7 tuning:     filter_cart
-#> ✓ 4 of 7 tuning:     filter_cart (39s)
+#> ✓ 4 of 7 tuning:     filter_cart (42.1s)
 #> i 5 of 7 tuning:     filter_knn
-#> ✓ 5 of 7 tuning:     filter_knn (40.6s)
+#> ✓ 5 of 7 tuning:     filter_knn (41.8s)
 #> i 6 of 7 tuning:     pca_cart
-#> ✓ 6 of 7 tuning:     pca_cart (31.6s)
+#> ✓ 6 of 7 tuning:     pca_cart (33s)
 #> i 7 of 7 tuning:     pca_knn
-#> ✓ 7 of 7 tuning:     pca_knn (31.3s)
+#> ✓ 7 of 7 tuning:     pca_knn (33s)
 chi_models
 #> # A workflow set/tibble: 7 x 4
-#>   wflow_id      info             option    result   
-#>   <chr>         <list>           <list>    <list>   
-#> 1 simple_glmnet <tibble [1 × 4]> <opts[3]> <tune[+]>
-#> 2 simple_cart   <tibble [1 × 4]> <opts[3]> <tune[+]>
-#> 3 simple_knn    <tibble [1 × 4]> <opts[3]> <tune[+]>
-#> 4 filter_cart   <tibble [1 × 4]> <opts[3]> <tune[+]>
-#> 5 filter_knn    <tibble [1 × 4]> <opts[3]> <tune[+]>
-#> 6 pca_cart      <tibble [1 × 4]> <opts[3]> <tune[+]>
-#> 7 pca_knn       <tibble [1 × 4]> <opts[3]> <tune[+]>
+#>   wflow_id      info                 option    result   
+#>   <chr>         <list>               <list>    <list>   
+#> 1 simple_glmnet <tibble[,4] [1 × 4]> <opts[3]> <tune[+]>
+#> 2 simple_cart   <tibble[,4] [1 × 4]> <opts[3]> <tune[+]>
+#> 3 simple_knn    <tibble[,4] [1 × 4]> <opts[3]> <tune[+]>
+#> 4 filter_cart   <tibble[,4] [1 × 4]> <opts[3]> <tune[+]>
+#> 5 filter_knn    <tibble[,4] [1 × 4]> <opts[3]> <tune[+]>
+#> 6 pca_cart      <tibble[,4] [1 × 4]> <opts[3]> <tune[+]>
+#> 7 pca_knn       <tibble[,4] [1 × 4]> <opts[3]> <tune[+]>
 ```
 
 The `results` column contains the results of each call to `tune_grid()`
@@ -254,3 +254,25 @@ rank_results(chi_models, rank_metric = "mae", select_best = TRUE) %>%
 #> 6     6  3.50 nearest_neighbor filter_knn    Preprocessor07_Model1
 #> 7     7  3.81 nearest_neighbor pca_knn       Preprocessor4_Model1
 ```
+
+## Contributing
+
+This project is released with a [Contributor Code of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
+
+-   For questions and discussions about tidymodels packages, modeling,
+    and machine learning, please [post on RStudio
+    Community](https://community.rstudio.com/new-topic?category_id=15&tags=tidymodels,question).
+
+-   If you think you have encountered a bug, please [submit an
+    issue](https://github.com/tidymodels/workflowsets/issues).
+
+-   Either way, learn how to create and share a
+    [reprex](https://reprex.tidyverse.org/articles/articles/learn-reprex.html)
+    (a minimal, reproducible example), to clearly communicate about your
+    code.
+
+-   Check out further details on [contributing guidelines for tidymodels
+    packages](https://www.tidymodels.org/contribute/) and [how to get
+    help](https://www.tidymodels.org/help/).
