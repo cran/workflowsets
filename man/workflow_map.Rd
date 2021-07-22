@@ -35,7 +35,7 @@ workflow fail, an \code{try-catch} object will be saved in place of the results
 \description{
 \code{workflow_map()} will execute the same function across the workflows in the
 set. The various \verb{tune_*()} functions can be used as well as
-\code{fit_resamples()}.
+\code{\link[tune:fit_resamples]{tune::fit_resamples()}}.
 }
 \details{
 When passing options, anything passed in the \code{...} will be combined with any
@@ -62,5 +62,5 @@ if (interactive()) {
 }
 }
 \seealso{
-\code{\link[=workflow_set]{workflow_set()}}, \code{\link[=as_workflow_set]{as_workflow_set()}}, \code{\link[=pull_workflow_set_result]{pull_workflow_set_result()}}
+\code{\link[=workflow_set]{workflow_set()}}, \code{\link[=as_workflow_set]{as_workflow_set()}}, \code{\link[=extract_workflow_set_result]{extract_workflow_set_result()}}
 }

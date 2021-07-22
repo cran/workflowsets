@@ -3,16 +3,17 @@
 \docType{import}
 \name{reexports}
 \alias{reexports}
-\alias{tbl_sum}
-\alias{type_sum}
-\alias{size_sum}
-\alias{tune_grid}
-\alias{tune_bayes}
-\alias{fit_resamples}
 \alias{collect_metrics}
 \alias{collect_predictions}
 \alias{\%>\%}
 \alias{autoplot}
+\alias{extract_spec_parsnip}
+\alias{extract_recipe}
+\alias{extract_fit_parsnip}
+\alias{extract_fit_engine}
+\alias{extract_mold}
+\alias{extract_preprocessor}
+\alias{extract_workflow}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -24,8 +25,8 @@ below to see their documentation.
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 
-  \item{tibble}{\code{\link[tibble:reexports]{size_sum}}, \code{\link[tibble:reexports]{tbl_sum}}, \code{\link[tibble:reexports]{type_sum}}}
+  \item{hardhat}{\code{\link[hardhat:hardhat-extract]{extract_fit_engine}}, \code{\link[hardhat:hardhat-extract]{extract_fit_parsnip}}, \code{\link[hardhat:hardhat-extract]{extract_mold}}, \code{\link[hardhat:hardhat-extract]{extract_preprocessor}}, \code{\link[hardhat:hardhat-extract]{extract_recipe}}, \code{\link[hardhat:hardhat-extract]{extract_spec_parsnip}}, \code{\link[hardhat:hardhat-extract]{extract_workflow}}}
 
-  \item{tune}{\code{\link[tune:collect_predictions]{collect_metrics}}, \code{\link[tune]{collect_predictions}}, \code{\link[tune]{fit_resamples}}, \code{\link[tune]{tune_bayes}}, \code{\link[tune]{tune_grid}}}
+  \item{tune}{\code{\link[tune:collect_predictions]{collect_metrics}}, \code{\link[tune]{collect_predictions}}}
 }}
 
