@@ -8,16 +8,16 @@ NULL
 #' @import ggplot2
 #' @import vctrs
 #' @importFrom stats qnorm as.formula model.frame
-#' @importFrom tibble obj_sum type_sum tbl_sum size_sum
+#' @importFrom pillar obj_sum type_sum tbl_sum size_sum
 #' @importFrom dplyr dplyr_reconstruct
 #' @importFrom lifecycle deprecated
 
 utils::globalVariables(
   c(
     ".config", ".estimator", ".metric", "info", "metric", "mod_nm",
-    "model", "n", "pp_nm", "preprocessor", "preproc", "object",
+    "model", "n", "pp_nm", "preprocessor", "preproc", "object", "engine",
     "result", "std_err", "wflow_id", "func", "is_race", "num_rs", "option",
-    "metrics", "predictions", "hash", "id", "workflow", "comment"
+    "metrics", "predictions", "hash", "id", "workflow", "comment", "get_from_env"
   )
 )
 
@@ -66,3 +66,11 @@ hardhat::extract_preprocessor
 #' @importFrom hardhat extract_workflow
 #' @export
 hardhat::extract_workflow
+#'
+#' @importFrom hardhat extract_parameter_set_dials
+#' @export
+hardhat::extract_parameter_set_dials
+#'
+#' @importFrom hardhat extract_parameter_dials
+#' @export
+hardhat::extract_parameter_dials
