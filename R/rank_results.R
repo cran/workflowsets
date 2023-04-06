@@ -2,10 +2,10 @@
 #'
 #' This function sorts the results by a specific performance metric.
 #'
-#' @param x A workflow set that has all results.
+#' @inheritParams collect_metrics.workflow_set
 #' @param rank_metric A character string for a metric.
-#' @param select_best A logical; should the results only contain the numerically
-#' best submodel per workflow.
+#' @param select_best A logical giving whether the results should only contain
+#' the numerically best submodel per workflow.
 #' @details
 #' If some models have the exact same performance,
 #' `rank(value, ties.method = "random")` is used (with a reproducible seed) so
@@ -16,7 +16,12 @@
 #' columns can be used to determine the corresponding parameter values.
 #' @return A tibble with columns: `wflow_id`, `.config`, `.metric`, `mean`,
 #' `std_err`, `n`, `preprocessor`, `model`, and `rank`.
+#'
+#' @includeRmd man-roxygen/example_data.Rmd note
+#'
 #' @examples
+#' chi_features_res
+#'
 #' rank_results(chi_features_res)
 #' rank_results(chi_features_res, select_best = TRUE)
 #' rank_results(chi_features_res, rank_metric = "rsq")

@@ -7,7 +7,7 @@
 #' from the `info` column.
 #'
 #'
-#' @param x A workflow set.
+#' @inheritParams comment_add
 #' @param id A single character string for a workflow ID.
 #' @details
 #' The [extract_workflow_set_result()] and [extract_workflow()] functions should
@@ -18,12 +18,14 @@
 #' @examples
 #' library(tune)
 #'
+#' two_class_res
+#'
 #' pull_workflow_set_result(two_class_res, "none_cart")
 #'
 #' pull_workflow(two_class_res, "none_cart")
 #' @export
 pull_workflow_set_result <- function(x, id) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.1.0",
     "pull_workflow_set_result()",
     "extract_workflow_set_result()"
@@ -41,7 +43,7 @@ pull_workflow_set_result <- function(x, id) {
 #' @export
 #' @rdname pull_workflow_set_result
 pull_workflow <- function(x, id) {
-  lifecycle::deprecate_soft("0.1.0", "pull_workflow()", "extract_workflow()")
+  lifecycle::deprecate_warn("0.1.0", "pull_workflow()", "extract_workflow()")
   if (length(id) != 1) {
     rlang::abort("'id' should have a single value.")
   }

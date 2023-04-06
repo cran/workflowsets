@@ -34,7 +34,7 @@ extract_workflow_set_result(x, id, ...)
 \method{extract_parameter_dials}{workflow_set}(x, id, parameter, ...)
 }
 \arguments{
-\item{x}{A workflow set.}
+\item{x}{A workflow set outputted by \code{\link[=workflow_set]{workflow_set()}} or \code{\link[=workflow_map]{workflow_map()}}.}
 
 \item{id}{A single character string for a workflow ID.}
 
@@ -70,14 +70,47 @@ whether the fitted or original recipe is returned.
 for a particular workflow.
 \item \code{extract_workflow()} returns the workflow object. The workflow will not
 have been estimated.
+\item \code{extract_parameter_set_dials()} returns the parameter set
+\emph{that will be used to fit} the supplied row \code{id} of the workflow set.
+Note that workflow sets reference a parameter set associated with the
+\code{workflow} contained in the \code{info} column by default, but can be
+fitted with a modified parameter set via the \code{\link[=option_add]{option_add()}} interface.
+This extractor returns the latter, if it exists, and returns the former
+if not, mirroring the process that \code{\link[=workflow_map]{workflow_map()}} follows to provide
+tuning functions a parameter set.
+\item \code{extract_parameter_dials()} returns the \code{parameters} object
+\emph{that will be used to fit} the supplied tuning \code{parameter} in the supplied
+row \code{id} of the workflow set. See the above notes in
+\code{extract_parameter_set_dials()} on precedence.
 }
 }
 \details{
 These functions supersede the \verb{pull_*()} functions (e.g.,
 \code{\link[=extract_workflow_set_result]{extract_workflow_set_result()}}).
 }
+\note{
+The package supplies two pre-generated workflow sets, \code{two_class_set}
+and \code{chi_features_set}, and associated sets of model fits
+\code{two_class_res} and \code{chi_features_res}.
+
+The \verb{two_class_*} objects are based on a binary classification problem
+using the \code{two_class_dat} data from the modeldata package. The six
+models utilize either a bare formula or a basic recipe utilizing
+\code{recipes::step_YeoJohnson()} as a preprocessor, and a decision tree,
+logistic regression, or MARS model specification. See \code{?two_class_set}
+for source code.
+
+The \verb{chi_features_*} objects are based on a regression problem using the
+\code{Chicago} data from the modeldata package. Each of the three models
+utilize a linear regression model specification, with three different
+recipes of varying complexity. The objects are meant to approximate the
+sequence of models built in Section 1.3 of Kuhn and Johnson (2019). See
+\code{?chi_features_set} for source code.
+}
 \examples{
 library(tune)
+
+two_class_res
 
 extract_workflow_set_result(two_class_res, "none_cart")
 

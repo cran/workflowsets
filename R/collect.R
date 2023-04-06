@@ -2,7 +2,8 @@
 #'
 #' Return a tibble of performance metrics for all models or submodels.
 #'
-#' @param x A `workflow_set` object where all workflows have been evaluated.
+#' @param x A [`workflow_set`][workflow_set()] object that has been evaluated
+#' with [workflow_map()].
 #' @param summarize A logical for whether the performance estimates should be
 #'  summarized via the mean (over resamples) or the raw performance values (per
 #'  resample) should be returned along with the resampling identifiers. When
@@ -32,10 +33,15 @@
 #' original objects (see the example below).
 #'
 #' @seealso [tune::collect_metrics()], [rank_results()]
+#'
+#' @includeRmd man-roxygen/example_data.Rmd note
+#'
 #' @examples
 #' library(dplyr)
 #' library(purrr)
 #' library(tidyr)
+#'
+#' two_class_res
 #'
 #' # ------------------------------------------------------------------------------
 #' \donttest{

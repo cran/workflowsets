@@ -9,19 +9,24 @@
 #' these values _after_ the workflow set is initially created. They are
 #' analogous to [workflows::add_model()] or [workflows::add_recipe()].
 #'
-#' @param x A workflow set.
+#' @inheritParams comment_add
 #' @param id A single character string from the `wflow_id` column indicating
 #' which workflow to update.
 #' @inheritParams workflows::add_recipe
 #' @inheritParams workflows::add_model
+#'
+#' @includeRmd man-roxygen/example_data.Rmd note
+#'
 #' @examples
 #' library(parsnip)
+#'
 #' new_mod <-
 #'   decision_tree() %>%
 #'   set_engine("rpart", method = "anova") %>%
 #'   set_mode("classification")
 #'
 #' new_set <- update_workflow_model(two_class_res, "none_cart", spec = new_mod)
+#'
 #' new_set
 #'
 #' extract_workflow(new_set, id = "none_cart")

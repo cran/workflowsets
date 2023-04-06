@@ -13,7 +13,7 @@ option_remove(x, ...)
 option_add_parameters(x, id = NULL, strict = FALSE)
 }
 \arguments{
-\item{x}{A workflow set.}
+\item{x}{A workflow set outputted by \code{\link[=workflow_set]{workflow_set()}} or \code{\link[=workflow_map]{workflow_map()}}.}
 
 \item{...}{A list of named options to pass to the \verb{tune_*()} functions (e.g.
 \code{\link[tune:tune_grid]{tune::tune_grid()}}) or \code{\link[tune:fit_resamples]{tune::fit_resamples()}}. For \code{option_remove()} this
@@ -23,7 +23,7 @@ can be a series of unquoted option names.}
 column that indicates which options to update. By default, all workflows
 are updated.}
 
-\item{strict}{A logical; show execution stop if existing options are being
+\item{strict}{A logical; should execution stop if existing options are being
 replaced?}
 }
 \value{
@@ -51,11 +51,15 @@ will add any options given to that function to the \code{option} column.
 
 These functions do \emph{not} control options for the individual workflows, such as
 the recipe blueprint. When creating a workflow manually, use
-\code{\link[workflows:add_model]{workflows::add_model()}} or \code{\link[workflows:add_recipe]{workflows::add_recipe()}} to specify.
+\code{\link[workflows:add_model]{workflows::add_model()}} or \code{\link[workflows:add_recipe]{workflows::add_recipe()}} to specify
 extra options. To alter these in a workflow set, use
 \code{\link[=update_workflow_model]{update_workflow_model()}} or \code{\link[=update_workflow_recipe]{update_workflow_recipe()}}.
 }
 \examples{
+library(tune)
+
+two_class_set
+
 two_class_set \%>\%
   option_add(grid = 10)
 
@@ -63,7 +67,6 @@ two_class_set \%>\%
   option_add(grid = 10) \%>\%
   option_add(grid = 50, id = "none_cart")
 
-library(tune)
 two_class_set \%>\%
   option_add_parameters()
 }

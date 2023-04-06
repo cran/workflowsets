@@ -61,7 +61,6 @@ we will build on:
 
 ``` r
 library(tidymodels)
-library(workflowsets)
 data(Chicago)
 # Use a small sample to keep file sizes down:
 Chicago <- Chicago %>% slice(1:365)
@@ -265,7 +264,7 @@ Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
 -   For questions and discussions about tidymodels packages, modeling,
-    and machine learning, please [post on RStudio
+    and machine learning, please [post on Posit
     Community](https://community.rstudio.com/new-topic?category_id=15&tags=tidymodels,question).
 
 -   If you think you have encountered a bug, please [submit an

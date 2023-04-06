@@ -10,7 +10,7 @@ pull_workflow_set_result(x, id)
 pull_workflow(x, id)
 }
 \arguments{
-\item{x}{A workflow set.}
+\item{x}{A workflow set outputted by \code{\link[=workflow_set]{workflow_set()}} or \code{\link[=workflow_map]{workflow_map()}}.}
 
 \item{id}{A single character string for a workflow ID.}
 }
@@ -32,6 +32,8 @@ be used instead of these functions.
 }
 \examples{
 library(tune)
+
+two_class_res
 
 pull_workflow_set_result(two_class_res, "none_cart")
 

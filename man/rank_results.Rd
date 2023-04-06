@@ -7,12 +7,13 @@
 rank_results(x, rank_metric = NULL, select_best = FALSE)
 }
 \arguments{
-\item{x}{A workflow set that has all results.}
+\item{x}{A \code{\link[=workflow_set]{workflow_set}} object that has been evaluated
+with \code{\link[=workflow_map]{workflow_map()}}.}
 
 \item{rank_metric}{A character string for a metric.}
 
-\item{select_best}{A logical; should the results only contain the numerically
-best submodel per workflow.}
+\item{select_best}{A logical giving whether the results should only contain
+the numerically best submodel per workflow.}
 }
 \value{
 A tibble with columns: \code{wflow_id}, \code{.config}, \code{.metric}, \code{mean},
@@ -30,7 +31,28 @@ No columns are returned for the tuning parameters since they are likely to
 be different (or not exist) for some models. The \code{wflow_id} and \code{.config}
 columns can be used to determine the corresponding parameter values.
 }
+\note{
+The package supplies two pre-generated workflow sets, \code{two_class_set}
+and \code{chi_features_set}, and associated sets of model fits
+\code{two_class_res} and \code{chi_features_res}.
+
+The \verb{two_class_*} objects are based on a binary classification problem
+using the \code{two_class_dat} data from the modeldata package. The six
+models utilize either a bare formula or a basic recipe utilizing
+\code{recipes::step_YeoJohnson()} as a preprocessor, and a decision tree,
+logistic regression, or MARS model specification. See \code{?two_class_set}
+for source code.
+
+The \verb{chi_features_*} objects are based on a regression problem using the
+\code{Chicago} data from the modeldata package. Each of the three models
+utilize a linear regression model specification, with three different
+recipes of varying complexity. The objects are meant to approximate the
+sequence of models built in Section 1.3 of Kuhn and Johnson (2019). See
+\code{?chi_features_set} for source code.
+}
 \examples{
+chi_features_res
+
 rank_results(chi_features_res)
 rank_results(chi_features_res, select_best = TRUE)
 rank_results(chi_features_res, rank_metric = "rsq")

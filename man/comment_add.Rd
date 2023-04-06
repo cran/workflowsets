@@ -16,7 +16,7 @@ comment_reset(x, id)
 comment_print(x, id = NULL, ...)
 }
 \arguments{
-\item{x}{A workflow set}
+\item{x}{A workflow set outputted by \code{\link[=workflow_set]{workflow_set()}} or \code{\link[=workflow_map]{workflow_map()}}.}
 
 \item{id}{A single character string for a value in the \code{wflow_id} column. For
 \code{comment_print()}, \code{id} can be a vector or \code{NULL} (and this indicates that
@@ -39,6 +39,8 @@ invisibly.
 its results as you work. Comments can be appended or removed.
 }
 \examples{
+two_class_set
+
 two_class_set \%>\% comment_get("none_cart")
 
 new_set <-
