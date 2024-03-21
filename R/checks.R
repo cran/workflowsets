@@ -1,3 +1,13 @@
+check_wf_set <- function(x, arg = caller_arg(x), call = caller_env()) {
+  if (!inherits(x, "workflow_set")) {
+    cli::cli_abort(
+       "{arg} must be a workflow set, not {obj_type_friendly(x)}.",
+       call = call
+    )
+  }
+
+  invisible(TRUE)
+}
 
 check_consistent_metrics <- function(x, fail = TRUE) {
   metric_info <-
@@ -74,7 +84,7 @@ check_options <- function(model, id, global, action = "fail") {
 
 check_tune_args <- function(x) {
   arg_names <- c("resamples", "param_info", "grid", "metrics", "control",
-                 "iter", "objective", "initial")
+                 "iter", "objective", "initial", "eval_time")
   bad_args <- setdiff(x, arg_names)
   if (length(bad_args) > 0) {
      msg <- paste0("'", bad_args, "'")
@@ -89,7 +99,7 @@ check_tune_args <- function(x) {
 
 recheck_options <- function(opts, .fn) {
   if (.fn == "fit_resamples") {
-    allowed <- c("object", "resamples", "metrics", "control")
+    allowed <- c("object", "resamples", "metrics", "control", "eval_time")
     nms <- names(opts)
     disallowed <- !(nms %in% allowed)
     if (any(disallowed)) {

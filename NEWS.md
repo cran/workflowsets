@@ -1,3 +1,18 @@
+# workflowsets 1.1.0
+
+* Ellipses (...) are now used consistently in the package to require optional arguments to be named; `collect_metrics()` and `collect_predictions()` are the only functions that received changes (#151, tidymodels/tune#863).
+* Enabled evaluating censored regression models (#139, #144). The placement of 
+  the new `eval_time` argument to `rank_results()` breaks passing-by-position 
+  for the `select_best` argument.
+* Added a `collect_notes()` method for workflow sets (#135).
+* Added methods to improve error messages when workflow sets are mistakenly
+  passed to unsupported functions like `fit()` and `predict()` (#137).
+* Added a new argument, `type`, to the `workflow_set` `autoplot()` method. The
+  default, `"class"`, retains the existing behavior of mapping model type to 
+  color and preprocessor type to shape, while the new `"wflow_id"`
+  type maps the workflow IDs to color (#134).
+* Added type checking for inputted arguments (#136, #131).
+
 # workflowsets 1.0.1
 
 * The `extract_parameter_dials()` and `extract_parameter_set_dials()` extractors

@@ -11,7 +11,7 @@
 #'
 #' @export
 #' @inheritParams comment_add
-#' @param ... A list of named options to pass to the `tune_*()` functions (e.g.
+#' @param ... Arguments to pass to the `tune_*()` functions (e.g.
 #' [tune::tune_grid()]) or [tune::fit_resamples()]. For `option_remove()` this
 #' can be a series of unquoted option names.
 #' @param id A character string of one or more values from the `wflow_id`
@@ -52,6 +52,7 @@
 #' two_class_set %>%
 #'   option_add_parameters()
 option_add <- function(x, ..., id = NULL, strict = FALSE) {
+  check_wf_set(x)
   dots <- list(...)
   if (length(dots) == 0) {
     return(x)
@@ -64,6 +65,9 @@ option_add <- function(x, ..., id = NULL, strict = FALSE) {
   }
 
   check_tune_args(names(dots))
+
+  check_string(id, allow_null = TRUE)
+  check_bool(strict)
 
   if (!is.null(id)) {
     for (i in id) {

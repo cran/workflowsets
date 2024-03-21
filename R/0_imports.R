@@ -7,6 +7,7 @@ NULL
 
 #' @import ggplot2
 #' @import vctrs
+#' @import rlang
 #' @importFrom stats qnorm as.formula model.frame
 #' @importFrom pillar obj_sum type_sum tbl_sum size_sum
 #' @importFrom dplyr dplyr_reconstruct
@@ -18,7 +19,7 @@ utils::globalVariables(
     "model", "n", "pp_nm", "preprocessor", "preproc", "object", "engine",
     "result", "std_err", "wflow_id", "func", "is_race", "num_rs", "option",
     "metrics", "predictions", "hash", "id", "workflow", "comment", "get_from_env",
-    ".get_tune_metric_names", "select_best"
+    ".get_tune_metric_names", "select_best", "notes"
   )
 )
 
@@ -31,6 +32,10 @@ tune::collect_metrics
 #' @importFrom tune collect_predictions
 #' @export
 tune::collect_predictions
+
+#' @importFrom tune collect_notes
+#' @export
+tune::collect_notes
 
 #' @importFrom dplyr %>%
 #' @export
