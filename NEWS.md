@@ -1,3 +1,11 @@
+# workflowsets 1.1.1
+
+* Added a `collect_extracts()` method for workflow sets (@jrosell, #156).
+
+* The deprecation of the `pull_*()` functions has been moved forward. These functions now error. Please use the `extract_*()` functions instead (#178).
+
+* Increased the minimum required R version to R 4.1.
+
 # workflowsets 1.1.0
 
 * Ellipses (...) are now used consistently in the package to require optional arguments to be named; `collect_metrics()` and `collect_predictions()` are the only functions that received changes (#151, tidymodels/tune#863).

@@ -4,8 +4,15 @@ test_that("autoplot with error bars (class)", {
   expect_equal(
     names(p_1$data),
     c(
-      "wflow_id", ".config", ".metric", "mean", "std_err", "n",
-      "preprocessor", "model", "rank"
+      "wflow_id",
+      ".config",
+      ".metric",
+      "mean",
+      "std_err",
+      "n",
+      "preprocessor",
+      "model",
+      "rank"
     )
   )
   expect_equal(rlang::get_expr(p_1$mapping$x), expr(rank))
@@ -25,28 +32,35 @@ test_that("autoplot with error bars (class)", {
 })
 
 test_that("autoplot with error bars (wflow_id)", {
-   p_1 <- autoplot(two_class_res, metric = "roc_auc", type = "wflow_id")
-   expect_s3_class(p_1, "ggplot")
-   expect_equal(
-      names(p_1$data),
-      c(
-         "wflow_id", ".config", ".metric", "mean", "std_err", "n",
-         "preprocessor", "model", "rank"
-      )
-   )
-   expect_equal(rlang::get_expr(p_1$mapping$x), expr(rank))
-   expect_equal(rlang::get_expr(p_1$mapping$y), expr(mean))
-   expect_equal(rlang::get_expr(p_1$mapping$colour), expr(wflow_id))
-   expect_equal(
-      rlang::get_expr(as.list(p_1$layers[[2]])$mapping$ymin),
-      expr(mean - std_errs * std_err)
-   )
-   expect_equal(
-      rlang::get_expr(as.list(p_1$layers[[2]])$mapping$ymax),
-      expr(mean + std_errs * std_err)
-   )
-   expect_equal(as.character(p_1$labels$y), "roc_auc")
-   expect_equal(as.character(p_1$labels$x), "Workflow Rank")
+  p_1 <- autoplot(two_class_res, metric = "roc_auc", type = "wflow_id")
+  expect_s3_class(p_1, "ggplot")
+  expect_equal(
+    names(p_1$data),
+    c(
+      "wflow_id",
+      ".config",
+      ".metric",
+      "mean",
+      "std_err",
+      "n",
+      "preprocessor",
+      "model",
+      "rank"
+    )
+  )
+  expect_equal(rlang::get_expr(p_1$mapping$x), expr(rank))
+  expect_equal(rlang::get_expr(p_1$mapping$y), expr(mean))
+  expect_equal(rlang::get_expr(p_1$mapping$colour), expr(wflow_id))
+  expect_equal(
+    rlang::get_expr(as.list(p_1$layers[[2]])$mapping$ymin),
+    expr(mean - std_errs * std_err)
+  )
+  expect_equal(
+    rlang::get_expr(as.list(p_1$layers[[2]])$mapping$ymax),
+    expr(mean + std_errs * std_err)
+  )
+  expect_equal(as.character(p_1$labels$y), "roc_auc")
+  expect_equal(as.character(p_1$labels$x), "Workflow Rank")
 })
 
 test_that("autoplot with bad type input", {
@@ -63,8 +77,15 @@ test_that("autoplot with without error bars", {
   expect_equal(
     names(p_2$data),
     c(
-      "wflow_id", ".config", ".metric", "mean", "std_err", "n",
-      "preprocessor", "model", "rank"
+      "wflow_id",
+      ".config",
+      ".metric",
+      "mean",
+      "std_err",
+      "n",
+      "preprocessor",
+      "model",
+      "rank"
     )
   )
   expect_equal(rlang::get_expr(p_2$mapping$x), expr(rank))
@@ -94,23 +115,23 @@ test_that("autoplot for specific workflow result", {
 
 test_that("automatic selection of rank metric", {
   expect_equal(
-    workflowsets:::pick_metric(two_class_res, NULL, NULL),
+    pick_metric(two_class_res, NULL, NULL),
     list(metric = "roc_auc", direction = "maximize")
   )
   expect_equal(
-    workflowsets:::pick_metric(two_class_res, NULL, "accuracy"),
+    pick_metric(two_class_res, NULL, "accuracy"),
     list(metric = "accuracy", direction = "maximize")
   )
   expect_equal(
-    workflowsets:::pick_metric(two_class_res, "accuracy"),
+    pick_metric(two_class_res, "accuracy"),
     list(metric = "accuracy", direction = "maximize")
   )
   expect_equal(
-    workflowsets:::pick_metric(two_class_res, "roc_auc"),
+    pick_metric(two_class_res, "roc_auc"),
     list(metric = "roc_auc", direction = "maximize")
   )
-  expect_error(
-    workflowsets:::pick_metric(two_class_res, "roc_auc", "accuracy"),
-    "was not in the results"
+  expect_snapshot(
+    error = TRUE,
+    pick_metric(two_class_res, "roc_auc", "accuracy")
   )
 })

@@ -42,14 +42,14 @@
 #'
 #' two_class_set
 #'
-#' two_class_set %>%
+#' two_class_set |>
 #'   option_add(grid = 10)
 #'
-#' two_class_set %>%
-#'   option_add(grid = 10) %>%
+#' two_class_set |>
+#'   option_add(grid = 10) |>
 #'   option_add(grid = 50, id = "none_cart")
 #'
-#' two_class_set %>%
+#' two_class_set |>
 #'   option_add_parameters()
 option_add <- function(x, ..., id = NULL, strict = FALSE) {
   check_wf_set(x)
@@ -73,7 +73,7 @@ option_add <- function(x, ..., id = NULL, strict = FALSE) {
     for (i in id) {
       ind <- which(x$wflow_id == i)
       if (length(ind) == 0) {
-        rlang::warn(paste("Don't have an 'id' value", i))
+        cli::cli_warn("Don't have an {.arg id} value {i}")
       } else {
         check_options(x$option[[ind]], x$wflow_id[[ind]], dots, action = act)
         x$option[[ind]] <- append_options(x$option[[ind]], dots)
@@ -101,7 +101,6 @@ option_remove <- function(x, ...) {
 }
 
 
-
 maybe_param <- function(x) {
   prm <- hardhat::extract_parameter_set_dials(x)
   if (nrow(prm) == 0) {
@@ -114,7 +113,7 @@ maybe_param <- function(x) {
 #' @export
 #' @rdname option_add
 option_add_parameters <- function(x, id = NULL, strict = FALSE) {
-  prm <- purrr::map(x$info, ~ maybe_param(.x$workflow[[1]]))
+  prm <- purrr::map(x$info, \(.x) maybe_param(.x$workflow[[1]]))
   num <- purrr::map_int(prm, length)
   if (all(num == 0)) {
     return(x)
@@ -130,9 +129,14 @@ option_add_parameters <- function(x, id = NULL, strict = FALSE) {
     for (i in id) {
       ind <- which(x$wflow_id == i)
       if (length(ind) == 0) {
-        rlang::warn(paste("Don't have an 'id' value", i))
+        cli::cli_warn("Don't have an {.arg id} value {i}")
       } else {
-        check_options(x$option[[ind]], x$wflow_id[[ind]], prm[[ind]], action = act)
+        check_options(
+          x$option[[ind]],
+          x$wflow_id[[ind]],
+          prm[[ind]],
+          action = act
+        )
         x$option[[ind]] <- append_options(x$option[[ind]], prm[[ind]])
       }
     }
@@ -188,10 +192,10 @@ print.workflow_set_options <- function(x, ...) {
 #' @export
 option_list <- function(...) new_workflow_set_options(...)
 
-new_workflow_set_options <- function(...) {
+new_workflow_set_options <- function(..., call = caller_env()) {
   res <- rlang::list2(...)
   if (any(names(res) == "")) {
-    rlang::abort("All options should be named.")
+    cli::cli_abort("All options should be named.", call = call)
   }
   structure(res, class = c("workflow_set_options", "list"))
 }

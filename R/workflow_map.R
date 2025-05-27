@@ -59,99 +59,106 @@
 #'
 #' # ---------------------------------------------------------------------------
 #' data(Chicago)
-#' Chicago <- Chicago[1:1195,]
+#' Chicago <- Chicago[1:1195, ]
 #'
 #' time_val_split <-
-#'    sliding_period(
-#'       Chicago,
-#'       date,
-#'       "month",
-#'       lookback = 38,
-#'       assess_stop = 1
-#'    )
+#'   sliding_period(
+#'     Chicago,
+#'     date,
+#'     "month",
+#'     lookback = 38,
+#'     assess_stop = 1
+#'   )
 #'
 #' # ---------------------------------------------------------------------------
 #'
 #' base_recipe <-
-#'    recipe(ridership ~ ., data = Chicago) %>%
-#'    # create date features
-#'    step_date(date) %>%
-#'    step_holiday(date) %>%
-#'    # remove date from the list of predictors
-#'    update_role(date, new_role = "id") %>%
-#'    # create dummy variables from factor columns
-#'    step_dummy(all_nominal()) %>%
-#'    # remove any columns with a single unique value
-#'    step_zv(all_predictors()) %>%
-#'    step_normalize(all_predictors())
+#'   recipe(ridership ~ ., data = Chicago) |>
+#'   # create date features
+#'   step_date(date) |>
+#'   step_holiday(date) |>
+#'   # remove date from the list of predictors
+#'   update_role(date, new_role = "id") |>
+#'   # create dummy variables from factor columns
+#'   step_dummy(all_nominal()) |>
+#'   # remove any columns with a single unique value
+#'   step_zv(all_predictors()) |>
+#'   step_normalize(all_predictors())
 #'
 #' date_only <-
-#'    recipe(ridership ~ ., data = Chicago) %>%
-#'    # create date features
-#'    step_date(date) %>%
-#'    update_role(date, new_role = "id") %>%
-#'    # create dummy variables from factor columns
-#'    step_dummy(all_nominal()) %>%
-#'    # remove any columns with a single unique value
-#'    step_zv(all_predictors())
+#'   recipe(ridership ~ ., data = Chicago) |>
+#'   # create date features
+#'   step_date(date) |>
+#'   update_role(date, new_role = "id") |>
+#'   # create dummy variables from factor columns
+#'   step_dummy(all_nominal()) |>
+#'   # remove any columns with a single unique value
+#'   step_zv(all_predictors())
 #'
 #' date_and_holidays <-
-#'    recipe(ridership ~ ., data = Chicago) %>%
-#'    # create date features
-#'    step_date(date) %>%
-#'    step_holiday(date) %>%
-#'    # remove date from the list of predictors
-#'    update_role(date, new_role = "id") %>%
-#'    # create dummy variables from factor columns
-#'    step_dummy(all_nominal()) %>%
-#'    # remove any columns with a single unique value
-#'    step_zv(all_predictors())
+#'   recipe(ridership ~ ., data = Chicago) |>
+#'   # create date features
+#'   step_date(date) |>
+#'   step_holiday(date) |>
+#'   # remove date from the list of predictors
+#'   update_role(date, new_role = "id") |>
+#'   # create dummy variables from factor columns
+#'   step_dummy(all_nominal()) |>
+#'   # remove any columns with a single unique value
+#'   step_zv(all_predictors())
 #'
 #' date_and_holidays_and_pca <-
-#'    recipe(ridership ~ ., data = Chicago) %>%
-#'    # create date features
-#'    step_date(date) %>%
-#'    step_holiday(date) %>%
-#'    # remove date from the list of predictors
-#'    update_role(date, new_role = "id") %>%
-#'    # create dummy variables from factor columns
-#'    step_dummy(all_nominal()) %>%
-#'    # remove any columns with a single unique value
-#'    step_zv(all_predictors()) %>%
-#'    step_pca(!!stations, num_comp = tune())
+#'   recipe(ridership ~ ., data = Chicago) |>
+#'   # create date features
+#'   step_date(date) |>
+#'   step_holiday(date) |>
+#'   # remove date from the list of predictors
+#'   update_role(date, new_role = "id") |>
+#'   # create dummy variables from factor columns
+#'   step_dummy(all_nominal()) |>
+#'   # remove any columns with a single unique value
+#'   step_zv(all_predictors()) |>
+#'   step_pca(!!stations, num_comp = tune())
 #'
 #' # ---------------------------------------------------------------------------
 #'
-#' lm_spec <- linear_reg() %>% set_engine("lm")
+#' lm_spec <- linear_reg() |> set_engine("lm")
 #'
 #' # ---------------------------------------------------------------------------
 #'
 #' pca_param <-
-#'    parameters(num_comp()) %>%
-#'    update(num_comp = num_comp(c(0, 20)))
+#'   parameters(num_comp()) |>
+#'   update(num_comp = num_comp(c(0, 20)))
 #'
 #' # ---------------------------------------------------------------------------
 #'
 #' chi_features_set <-
-#'    workflow_set(
-#'       preproc = list(date = date_only,
-#'                      plus_holidays = date_and_holidays,
-#'                      plus_pca = date_and_holidays_and_pca),
-#'       models = list(lm = lm_spec),
-#'       cross = TRUE
-#'    )
+#'   workflow_set(
+#'     preproc = list(
+#'       date = date_only,
+#'       plus_holidays = date_and_holidays,
+#'       plus_pca = date_and_holidays_and_pca
+#'     ),
+#'     models = list(lm = lm_spec),
+#'     cross = TRUE
+#'   )
 #'
 #' # ---------------------------------------------------------------------------
 #'
 #' chi_features_res_new <-
-#'    chi_features_set %>%
-#'    option_add(param_info = pca_param, id = "plus_pca_lm") %>%
-#'    workflow_map(resamples = time_val_split, grid = 21, seed = 1, verbose = TRUE)
+#'   chi_features_set |>
+#'   option_add(param_info = pca_param, id = "plus_pca_lm") |>
+#'   workflow_map(resamples = time_val_split, grid = 21, seed = 1, verbose = TRUE)
 #'
 #' chi_features_res_new
 #' @export
-workflow_map <- function(object, fn = "tune_grid", verbose = FALSE,
-                         seed = sample.int(10^4, 1), ...) {
+workflow_map <- function(
+  object,
+  fn = "tune_grid",
+  verbose = FALSE,
+  seed = sample.int(10^4, 1),
+  ...
+) {
   check_wf_set(object)
 
   rlang::arg_match(fn, allowed_fn$func)
@@ -185,8 +192,13 @@ workflow_map <- function(object, fn = "tune_grid", verbose = FALSE,
     .fn_info <- dplyr::filter(allowed_fn, func == .fn)
 
     log_progress(
-      verbose, object$wflow_id[[iter]], NULL, iter_chr[iter],
-      n, .fn, NULL
+      verbose,
+      object$wflow_id[[iter]],
+      NULL,
+      iter_chr[iter],
+      n,
+      .fn,
+      NULL
     )
 
     if (has_all_pkgs(wflow)) {
@@ -200,8 +212,13 @@ workflow_map <- function(object, fn = "tune_grid", verbose = FALSE,
       })
       object <- new_workflow_set(object)
       log_progress(
-        verbose, object$wflow_id[[iter]], object$result[[iter]],
-        iter_chr[iter], n, .fn, run_time
+        verbose,
+        object$wflow_id[[iter]],
+        object$result[[iter]],
+        iter_chr[iter],
+        n,
+        .fn,
+        run_time
       )
     }
   }
@@ -212,8 +229,13 @@ workflow_map <- function(object, fn = "tune_grid", verbose = FALSE,
 allowed_fn <-
   tibble::tibble(
     func = c(
-      "tune_grid", "tune_bayes", "fit_resamples", "tune_race_anova",
-      "tune_race_win_loss", "tune_sim_anneal", "tune_cluster"
+      "tune_grid",
+      "tune_bayes",
+      "fit_resamples",
+      "tune_race_anova",
+      "tune_race_win_loss",
+      "tune_sim_anneal",
+      "tune_cluster"
     ),
     pkg = c(rep("tune", 3), rep("finetune", 3), "tidyclust")
   )
@@ -222,44 +244,45 @@ allowed_fn_list <- paste0("'", allowed_fn$func, "'", collapse = ", ")
 
 # ---------------------------------------------
 check_object_fn <- function(object, fn, call = rlang::caller_env()) {
-   wf_specs <- purrr::map(
-     object$wflow_id, ~extract_spec_parsnip(object, id = .x)
-   )
-   is_cluster_spec <- purrr::map_lgl(wf_specs, inherits, "cluster_spec")
+  wf_specs <- purrr::map(
+    object$wflow_id,
+    \(.x) extract_spec_parsnip(object, id = .x)
+  )
+  is_cluster_spec <- purrr::map_lgl(wf_specs, inherits, "cluster_spec")
 
-   if (identical(fn, "tune_cluster")) {
-      if (!all(is_cluster_spec)) {
-         cli::cli_abort(
-            "To tune with {.fn tune_cluster}, each workflow's model \\
+  if (identical(fn, "tune_cluster")) {
+    if (!all(is_cluster_spec)) {
+      cli::cli_abort(
+        "To tune with {.fn tune_cluster}, each workflow's model \\
             specification must inherit from {.cls cluster_spec}, but \\
             {.var {object$wflow_id[!is_cluster_spec]}} {?does/do} not.",
-            call = call
-         )
-      }
-      return(invisible())
-   }
+        call = call
+      )
+    }
+    return(invisible())
+  }
 
-   is_model_spec <- purrr::map_lgl(wf_specs, inherits, "model_spec")
+  is_model_spec <- purrr::map_lgl(wf_specs, inherits, "model_spec")
 
-   msg <-
+  msg <-
     "To tune with {.fn {fn}}, each workflow's model \\
      specification must inherit from {.cls model_spec}, but \\
      {.var {object$wflow_id[!is_model_spec]}} {?does/do} not."
 
-   if (any(is_cluster_spec)) {
-      msg <- c(
-         msg,
-         "i" = "{cli::qty(object$wflow_id[is_cluster_spec])} \\
+  if (any(is_cluster_spec)) {
+    msg <- c(
+      msg,
+      "i" = "{cli::qty(object$wflow_id[is_cluster_spec])} \\
                 The workflow{?/s} {.var {object$wflow_id[is_cluster_spec]}} \\
                 {?is a /are} cluster specification{?/s}. Did you intend to \\
                 set `fn = 'tune_cluster'`?"
-      )
-   }
-   if (!all(is_model_spec)) {
-      cli::cli_abort(msg, call = call)
-   }
+    )
+  }
+  if (!all(is_model_spec)) {
+    cli::cli_abort(msg, call = call)
+  }
 
-   return(invisible())
+  return(invisible())
 }
 
 # ------------------------------------------------------------------------------
@@ -277,7 +300,8 @@ log_progress <- function(verbose, id, res, iter, n, .fn, elapsed) {
     errors_msg <- gsub("\n", "", as.character(res))
     errors_msg <- gsub("Error : ", "", errors_msg, fixed = TRUE)
     message(
-      cols$symbol$danger(cli::symbol$cross), " ",
+      cols$symbol$danger(cli::symbol$cross),
+      " ",
       cols$message$info(msg),
       cols$message$info(" failed with: "),
       cols$message$danger(errors_msg)
@@ -287,7 +311,8 @@ log_progress <- function(verbose, id, res, iter, n, .fn, elapsed) {
 
   if (is.null(res)) {
     message(
-      cols$symbol$info("i"), " ",
+      cols$symbol$info("i"),
+      " ",
       cols$message$info(msg)
     )
   } else {
@@ -299,7 +324,8 @@ log_progress <- function(verbose, id, res, iter, n, .fn, elapsed) {
       errors_msg <- gsub("\n", "", as.character(res))
       errors_msg <- gsub("Error : ", "", errors_msg, fixed = TRUE)
       message(
-        cols$symbol$danger(cli::symbol$cross), " ",
+        cols$symbol$danger(cli::symbol$cross),
+        " ",
         cols$message$info(msg),
         cols$message$info(" failed with "),
         cols$message$danger(errors_msg)
@@ -307,7 +333,8 @@ log_progress <- function(verbose, id, res, iter, n, .fn, elapsed) {
     } else {
       time_msg <- paste0(" (", prettyunits::pretty_sec(elapsed[3]), ")")
       message(
-        cols$symbol$success(cli::symbol$tick), " ",
+        cols$symbol$success(cli::symbol$tick),
+        " ",
         cols$message$info(msg),
         cols$message$info(time_msg)
       )
@@ -318,8 +345,8 @@ log_progress <- function(verbose, id, res, iter, n, .fn, elapsed) {
 }
 
 collect_res_notes <- function(x, show = 1) {
-   y <- purrr::map_dfr(x$.notes, I)
-   show <- min(show, nrow(y))
-   y <- paste0(y$.notes[1:show])
-   gsub("[\r\n]", "", y)
+  y <- purrr::map_dfr(x$.notes, I)
+  show <- min(show, nrow(y))
+  y <- paste0(y$.notes[1:show])
+  gsub("[\r\n]", "", y)
 }

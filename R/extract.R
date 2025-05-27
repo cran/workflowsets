@@ -94,18 +94,20 @@ extract_spec_parsnip.workflow_set <- function(x, id, ...) {
 extract_recipe.workflow_set <- function(x, id, ..., estimated = TRUE) {
   check_empty_dots(...)
   if (!rlang::is_bool(estimated)) {
-    rlang::abort("`estimated` must be a single `TRUE` or `FALSE`.")
+    cli::cli_abort(
+      "{.arg estimated} must be a single {.code TRUE} or {.code FALSE}."
+    )
   }
   y <- filter_id(x, id)
   extract_recipe(y$info[[1]]$workflow[[1]], estimated = estimated)
 }
-check_empty_dots <- function(...) {
+check_empty_dots <- function(..., call = caller_env()) {
   opts <- list(...)
   if (any(names(opts) == "estimated")) {
-    rlang::abort("'estimated' should be a named argument.")
+    cli::cli_abort("{.arg estimated} should be a named argument.", call = call)
   }
   if (length(opts) > 0) {
-    rlang::abort("'...' are not used in this function.")
+    cli::cli_abort("{.arg ...} are not used in this function.", call = call)
   }
   invisible(NULL)
 }
@@ -142,31 +144,34 @@ extract_preprocessor.workflow_set <- function(x, id, ...) {
 #' @export
 #' @rdname extract_workflow_set_result
 extract_parameter_set_dials.workflow_set <- function(x, id, ...) {
-   y <- filter_id(x, id)
+  y <- filter_id(x, id)
 
-   if ("param_info" %in% names(y$option[[1]])) {
-      return(y$option[[1]][["param_info"]])
-   }
+  if ("param_info" %in% names(y$option[[1]])) {
+    return(y$option[[1]][["param_info"]])
+  }
 
-   extract_parameter_set_dials(y$info[[1]]$workflow[[1]])
+  extract_parameter_set_dials(y$info[[1]]$workflow[[1]])
 }
 
 #' @export
 #' @rdname extract_workflow_set_result
 extract_parameter_dials.workflow_set <- function(x, id, parameter, ...) {
-   res <- extract_parameter_set_dials(x, id)
-   res <- extract_parameter_dials(res, parameter)
+  res <- extract_parameter_set_dials(x, id)
+  res <- extract_parameter_dials(res, parameter)
 
-   res
+  res
 }
 
 # ------------------------------------------------------------------------------
 
-filter_id <- function(x, id) {
+filter_id <- function(x, id, call = caller_env()) {
   check_string(id)
   out <- dplyr::filter(x, wflow_id == id)
   if (nrow(out) != 1L) {
-    halt("`id` must correspond to a single row in `x`.")
+    cli::cli_abort(
+      "{.arg id} must correspond to a single row in {.arg x}.",
+      call = call
+    )
   }
   out
 }

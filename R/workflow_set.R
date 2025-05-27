@@ -73,7 +73,7 @@
 #' # ------------------------------------------------------------------------------
 #'
 #' data(cells)
-#' cells <- cells %>% dplyr::select(-case)
+#' cells <- cells |> dplyr::select(-case)
 #'
 #' set.seed(1)
 #' val_set <- validation_split(cells)
@@ -81,27 +81,27 @@
 #' # ------------------------------------------------------------------------------
 #'
 #' basic_recipe <-
-#'   recipe(class ~ ., data = cells) %>%
-#'   step_YeoJohnson(all_predictors()) %>%
+#'   recipe(class ~ ., data = cells) |>
+#'   step_YeoJohnson(all_predictors()) |>
 #'   step_normalize(all_predictors())
 #'
 #' pca_recipe <-
-#'   basic_recipe %>%
+#'   basic_recipe |>
 #'   step_pca(all_predictors(), num_comp = tune())
 #'
 #' ss_recipe <-
-#'   basic_recipe %>%
+#'   basic_recipe |>
 #'   step_spatialsign(all_predictors())
 #'
 #' # ------------------------------------------------------------------------------
 #'
 #' knn_mod <-
-#'   nearest_neighbor(neighbors = tune(), weight_func = tune()) %>%
-#'   set_engine("kknn") %>%
+#'   nearest_neighbor(neighbors = tune(), weight_func = tune()) |>
+#'   set_engine("kknn") |>
 #'   set_mode("classification")
 #'
 #' lr_mod <-
-#'   logistic_reg() %>%
+#'   logistic_reg() |>
 #'   set_engine("glm")
 #'
 #' # ------------------------------------------------------------------------------
@@ -117,7 +117,7 @@
 #'
 #' # Select predictors by their names
 #' channels <- paste0("ch_", 1:4)
-#' preproc <- purrr::map(channels, ~ workflow_variables(class, c(contains(!!.x))))
+#' preproc <- purrr::map(channels, \(.x) workflow_variables(class, c(contains(!!.x))))
 #' names(preproc) <- channels
 #' preproc$everything <- class ~ .
 #' preproc
@@ -128,12 +128,13 @@
 workflow_set <- function(preproc, models, cross = TRUE, case_weights = NULL) {
   check_bool(cross)
 
-  if (length(preproc) != length(models) &
-    (length(preproc) != 1 & length(models) != 1 &
-      !cross)
+  if (
+    length(preproc) != length(models) &
+      (length(preproc) != 1 & length(models) != 1 & !cross)
   ) {
-    rlang::abort(
-      "The lengths of 'preproc' and 'models' are different and `cross = FALSE`."
+    cli::cli_abort(
+      "The lengths of {.arg preproc} and {.arg models} are different
+       and {.code cross = FALSE}."
     )
   }
 
@@ -150,18 +151,18 @@ workflow_set <- function(preproc, models, cross = TRUE, case_weights = NULL) {
   # call set_weights outside of mutate call so that dplyr
   # doesn't prepend possible warnings with "Problem while computing..."
   wfs <-
-     purrr::map2(res$preproc, res$model, make_workflow) %>%
-     set_weights(case_weights) %>%
-     unname()
+    purrr::map2(res$preproc, res$model, make_workflow) |>
+    set_weights(case_weights) |>
+    unname()
 
   res <-
-     res %>%
-     dplyr::mutate(
+    res |>
+    dplyr::mutate(
       workflow = wfs,
       info = purrr::map(workflow, get_info),
-      option = purrr::map(1:nrow(res), ~ new_workflow_set_options()),
-      result = purrr::map(1:nrow(res), ~ list())
-    ) %>%
+      option = purrr::map(1:nrow(res), \(i) new_workflow_set_options()),
+      result = purrr::map(1:nrow(res), \(i) list())
+    ) |>
     dplyr::select(wflow_id, info, option, result)
 
   new_workflow_set(res)
@@ -187,7 +188,7 @@ model_type <- function(x) {
 }
 
 fix_list_names <- function(x) {
-  prefix <- purrr::map_chr(x, ~ class(.x)[1])
+  prefix <- purrr::map_chr(x, \(.x) class(.x)[1])
   prefix <- vctrs::vec_as_names(prefix, repair = "unique", quiet = TRUE)
   prefix <- gsub("\\.\\.\\.", "_", prefix)
   nms <- names(x)
@@ -201,9 +202,9 @@ fix_list_names <- function(x) {
 }
 
 cross_objects <- function(preproc, models) {
-  tidyr::crossing(preproc, models) %>%
-    dplyr::mutate(pp_nm = names(preproc), mod_nm = names(models)) %>%
-    dplyr::mutate(wflow_id = paste(pp_nm, mod_nm, sep = "_")) %>%
+  tidyr::crossing(preproc, models) |>
+    dplyr::mutate(pp_nm = names(preproc), mod_nm = names(models)) |>
+    dplyr::mutate(wflow_id = paste(pp_nm, mod_nm, sep = "_")) |>
     dplyr::select(wflow_id, preproc, model = models)
 }
 
@@ -214,81 +215,81 @@ fuse_objects <- function(preproc, models) {
   nms <-
     tibble::tibble(wflow_id = paste(names(preproc), names(models), sep = "_"))
 
-  tibble::tibble(preproc = preproc, model = models) %>%
+  tibble::tibble(preproc = preproc, model = models) |>
     dplyr::bind_cols(nms)
 }
 
 # takes in a _list_ of workflows so that we can check whether case weights
 # are allowed in batch and only prompt once if so.
 set_weights <- function(workflows, case_weights) {
-   if (rlang::quo_is_null(case_weights)) {
-      return(workflows)
-   }
+  if (rlang::quo_is_null(case_weights)) {
+    return(workflows)
+  }
 
-   allowed <-
-      workflows %>%
-      purrr::map(extract_spec_parsnip) %>%
-      purrr::map_lgl(case_weights_allowed)
+  allowed <-
+    workflows |>
+    purrr::map(extract_spec_parsnip) |>
+    purrr::map_lgl(case_weights_allowed)
 
-   if (any(!allowed)) {
-      disallowed <-
-         workflows[!allowed] %>%
-         purrr::map(extract_spec_parsnip) %>%
-         purrr::map(purrr::pluck, "engine") %>%
-         unlist() %>%
-         unique()
+  if (any(!allowed)) {
+    disallowed <-
+      workflows[!allowed] |>
+      purrr::map(extract_spec_parsnip) |>
+      purrr::map(purrr::pluck, "engine") |>
+      unlist() |>
+      unique()
 
-      rlang::warn(
-         glue::glue(
-            "Case weights are not enabled by the underlying model implementation ",
-            "for the following engine(s): ",
-            "{glue::glue_collapse(disallowed, sep = ', ')}.\n\n",
-            "The `case_weights` argument will be ignored for specifications ",
-            "using that engine."
-         )
+    cli::cli_warn(
+      c(
+        "Case weights are not enabled by the underlying model implementation
+         for the engine{?s} {.or {.val {disallowed}}}.",
+        "i" = "The {.arg case_weights} argument will be ignored for
+               specifications using {cli::qty(disallowed)}
+               {?that engine/those engines}."
       )
-   }
+    )
+  }
 
-   workflows <-
-      purrr::map2(
-         workflows,
-         allowed,
-         add_case_weights_conditionally,
-         case_weights
-      )
+  workflows <-
+    purrr::map2(
+      workflows,
+      allowed,
+      add_case_weights_conditionally,
+      case_weights
+    )
 
-   workflows
+  workflows
 }
 
 # copied from parsnip
 case_weights_allowed <- function(spec) {
-   mod_type <- class(spec)[1]
-   mod_eng <- spec$engine
-   mod_mode <- spec$mode
+  mod_type <- class(spec)[1]
+  mod_eng <- spec$engine
+  mod_mode <- spec$mode
 
-   model_info <-
-      parsnip::get_from_env(paste0(mod_type, "_fit")) %>%
-      dplyr::filter(engine == mod_eng & mode == mod_mode)
+  model_info <-
+    parsnip::get_from_env(paste0(mod_type, "_fit")) |>
+    dplyr::filter(engine == mod_eng & mode == mod_mode)
 
-   # If weights are used, they are protected data arguments with the canonical
-   # name 'weights' (although this may not be the model function's argument name).
-   data_args <- model_info$value[[1]]$protect
-   any(data_args == "weights")
+  # If weights are used, they are protected data arguments with the canonical
+  # name 'weights' (although this may not be the model function's argument name).
+  data_args <- model_info$value[[1]]$protect
+  any(data_args == "weights")
 }
 
 add_case_weights_conditionally <- function(workflow, allowed, case_weights) {
-   if (allowed) {
-      res <- workflows::add_case_weights(workflow, !!case_weights)
-   } else{
-      res <- workflow
-   }
+  if (allowed) {
+    res <- workflows::add_case_weights(workflow, !!case_weights)
+  } else {
+    res <- workflow
+  }
 
-   res
+  res
 }
 
 # adapted from workflows
 has_case_weights <- function(x) {
-   "case_weights" %in% names(x$pre$actions)
+  "case_weights" %in% names(x$pre$actions)
 }
 
 
@@ -321,59 +322,75 @@ tbl_sum.workflow_set <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-new_workflow_set <- function(x) {
+new_workflow_set <- function(x, call = caller_env()) {
   if (!has_required_container_type(x)) {
-    halt("`x` must be a list.")
+    cli::cli_abort("{.arg x} must be a list.", call = call)
   }
   if (!has_required_container_columns(x)) {
     columns <- required_container_columns()
-    halt(
-      "The object should have columns: ",
-      paste0("'", columns, "'", collapse = ", "),
-      "."
+    cli::cli_abort(
+      "The object should have columns {.field {columns}}.",
+      call = call
     )
   }
 
   if (!has_valid_column_info_structure(x)) {
-    halt("The 'info' column should be a list.")
+    cli::cli_abort("The {.field info} column should be a list.", call = call)
   }
   if (!has_valid_column_info_inner_types(x)) {
-    halt("All elements of 'info' must be tibbles.")
+    cli::cli_abort(
+      "All elements of {.field info} must be tibbles.",
+      call = call
+    )
   }
   if (!has_valid_column_info_inner_names(x)) {
     columns <- required_info_inner_names()
-    halt(
-      "The 'info' columns should have columns: ",
-      paste0("'", columns, "'", collapse = ", "),
-      "."
+    cli::cli_abort(
+      "Elements in the {.field info} column should have columns {.field {columns}}.",
+      call = call
     )
   }
 
   if (!has_valid_column_result_structure(x)) {
-    halt("The 'result' column should be a list.")
+    cli::cli_abort("The {.field result} column should be a list.", call = call)
   }
   if (!has_valid_column_result_inner_types(x)) {
-    halt("Some elements of 'result' do not have class `tune_results`.")
+    cli::cli_abort(
+      "Some elements of {.field result} do not have class {.cls tune_results}.",
+      call = call
+    )
   }
   if (!has_valid_column_result_fingerprints(x)) {
-    halt(
-      "Different resamples were used in the workflow 'result's. ",
-      "All elements of 'result' must use the same resamples."
+    cli::cli_abort(
+      c(
+        "Different resamples were used in the workflow {.field result}s.",
+        "i" = "All elements of {.field result} must use the same resamples."
+      ),
+      call = call
     )
   }
 
   if (!has_valid_column_option_structure(x)) {
-    halt("The 'option' column should be a list.")
+    cli::cli_abort("The {.field option} column should be a list.", call = call)
   }
   if (!has_valid_column_option_inner_types(x)) {
-    halt("All elements of 'option' should have class 'workflow_set_options'.")
+    cli::cli_abort(
+      "All elements of {.arg option} should have class {.cls workflow_set_options}.",
+      call = call
+    )
   }
 
   if (!has_valid_column_wflow_id_structure(x)) {
-    halt("The 'wflow_id' column should be character.")
+    cli::cli_abort(
+      "The {.field wflow_id} column should be character.",
+      call = call
+    )
   }
   if (!has_valid_column_wflow_id_strings(x)) {
-    halt("The 'wflow_id' column should contain unique, non-missing character strings.")
+    cli::cli_abort(
+      "The {.field wflow_id} column should contain unique, non-missing character strings.",
+      call = call
+    )
   }
 
   new_workflow_set0(x)
@@ -388,5 +405,3 @@ new_tibble0 <- function(x, ..., class = NULL) {
   x <- vctrs::new_data_frame(x)
   tibble::new_tibble(x, nrow = nrow(x), class = class)
 }
-
-
